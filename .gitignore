@@ -2,3 +2,5 @@
 *.sqlite
 *.ipynb
 __pycache__
+
+tag_data.json
