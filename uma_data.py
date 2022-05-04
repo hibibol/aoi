@@ -47,7 +47,14 @@ class EventData(TypedDict):
 
 
 class UmaData:
-    uma_data: DB = {}
+    players: list = []
+    supports: list = []
+    skills: List["SkillData"] = []
+    updateTime: list = []
+    races: list = []
+    buffs: list = []
+    effects: list = []
+    events: List["EventData"] = []
 
 
 async def get_uma_data():
@@ -55,12 +62,20 @@ async def get_uma_data():
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as resp:
             text = await resp.text()
-            UmaData.uma_data = json.loads(text)
+            uma_data: DB = json.loads(text)
+            UmaData.players = uma_data["players"]
+            UmaData.supports = uma_data["supports"]
+            UmaData.skills = uma_data["skills"]
+            UmaData.updateTime = uma_data["updateTime"]
+            UmaData.races = uma_data["races"]
+            UmaData.buffs = uma_data["buffs"]
+            UmaData.effects = uma_data["effects"]
+            UmaData.events = uma_data["events"]
 
 
 async def update_uma_data():
     while True:
-        if datetime.now(JST).strftime("%H:%M") == "11:45" or not UmaData.uma_data:
+        if datetime.now(JST).strftime("%H:%M") == "11:45" or not UmaData.players:
             print("read data")
             await get_uma_data()
         await asyncio.sleep(60)
