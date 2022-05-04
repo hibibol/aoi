@@ -27,12 +27,24 @@ def get_has_skill_players(skill_id: str):
 
 
 def get_event_skill_players(skill_id: str):
+    event_ids = get_skill_events(skill_id)
+    valid_event_ids = []
+    for event_id in event_ids:
+        event_players = [
+            player
+            for player in UmaData.players
+            if event_id in player.get("eventList", [])
+        ]
+        if len(event_players) > 30:
+            continue
+        valid_event_ids.append(event_id)
+
     return [
         player
         for player in UmaData.players
         if any(
             event_id in player.get("eventList", [])
-            for event_id in get_skill_events(skill_id)
+            for event_id in get_skill_events(valid_event_ids)
         )
     ]
 
